@@ -1,0 +1,301 @@
+/* ── Reset & Base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  --bg:        #0d1117;
+  --surface:   rgba(255,255,255,0.06);
+  --border:    rgba(255,255,255,0.10);
+  --text:      #f0f4ff;
+  --muted:     rgba(240,244,255,0.50);
+  --accent:    #6ee7f7;
+  --accent-2:  #a78bfa;
+  --radius:    20px;
+  --shadow:    0 8px 40px rgba(0,0,0,0.35);
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background 0.8s ease;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ── Noise overlay ──────────────────────────────────────────────────────────── */
+.noise {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 200px;
+  opacity: .55;
+  z-index: 0;
+}
+
+/* ── Backgrounds ────────────────────────────────────────────────────────────── */
+.bg-default      { background: linear-gradient(135deg,#0d1117 0%,#1a2035 100%); }
+.bg-sunny        { background: linear-gradient(145deg,#1a1000 0%,#3d2800 40%,#8c5c00 100%); }
+.bg-cloudy       { background: linear-gradient(145deg,#111820 0%,#1f2d3d 50%,#2b3a4a 100%); }
+.bg-rainy        { background: linear-gradient(145deg,#0d1520 0%,#0e2030 50%,#0a2540 100%); }
+.bg-thunderstorm { background: linear-gradient(145deg,#0a0a15 0%,#150d28 50%,#1a0a30 100%); }
+.bg-snowy        { background: linear-gradient(145deg,#0d1525 0%,#1a2535 50%,#202e3e 100%); }
+.bg-foggy        { background: linear-gradient(145deg,#111318 0%,#1e2028 50%,#252830 100%); }
+
+/* ── Layout ─────────────────────────────────────────────────────────────────── */
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-shrink: 0;
+}
+.logo-icon  { font-size: 1.4rem; color: var(--accent); }
+.logo-text  { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.03em; }
+
+.search-form {
+  flex: 1;
+  display: flex;
+  min-width: 220px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  transition: border-color .2s;
+}
+.search-form:focus-within { border-color: var(--accent); }
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: .75rem 1.25rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text);
+}
+.search-input::placeholder { color: var(--muted); }
+
+.search-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: .75rem 1.25rem;
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  transition: color .2s;
+}
+.search-btn:hover { color: #fff; }
+
+/* ── Error ──────────────────────────────────────────────────────────────────── */
+.error-card {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  background: rgba(239,68,68,.12);
+  border: 1px solid rgba(239,68,68,.3);
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #fca5a5;
+  font-size: .95rem;
+}
+.error-icon { font-size: 1.2rem; }
+
+/* ── Hero Prompt ────────────────────────────────────────────────────────────── */
+.hero-prompt {
+  text-align: center;
+  padding: 5rem 1rem;
+  animation: fadeUp .6s ease forwards;
+}
+.hero-icon { font-size: 4.5rem; margin-bottom: 1.5rem; }
+.hero-prompt h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.04em;
+  margin-bottom: 1rem;
+}
+.hero-prompt h1 em { color: var(--accent); font-style: normal; }
+.hero-prompt p { color: var(--muted); font-size: 1.05rem; }
+
+/* ── Weather Grid ───────────────────────────────────────────────────────────── */
+.weather-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "main  stats"
+    "forecast forecast";
+  animation: fadeUp .5s ease forwards;
+}
+
+@media (max-width: 620px) {
+  .weather-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas: "main" "stats" "forecast";
+  }
+}
+
+/* ── Cards ──────────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: .8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+/* Main Card */
+.card-main {
+  grid-area: main;
+  position: relative;
+  overflow: hidden;
+}
+.card-location {
+  font-size: .9rem;
+  color: var(--muted);
+  margin-bottom: .5rem;
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+}
+.pin-icon { font-size: .85rem; }
+
+.card-temp {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 12vw, 6.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.04em;
+  background: linear-gradient(135deg, #fff 40%, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.card-desc {
+  font-size: 1rem;
+  color: var(--muted);
+  text-transform: capitalize;
+  margin: .35rem 0 .2rem;
+}
+.card-feels { font-size: .85rem; color: var(--muted); }
+
+.card-icon {
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 120px;
+  opacity: .85;
+  filter: drop-shadow(0 4px 20px rgba(110,231,247,.3));
+}
+
+/* Stats Card */
+.card-stats { grid-area: stats; }
+
+.stats-list { list-style: none; display: flex; flex-direction: column; gap: .75rem; }
+.stats-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: .9rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: .65rem;
+}
+.stats-list li:last-child { border-bottom: none; padding-bottom: 0; }
+.stat-label { color: var(--muted); }
+.stat-value { font-weight: 500; }
+.stat-value em { font-style: normal; color: var(--accent); font-size: .8rem; margin-left: .2rem; }
+
+/* Forecast Card */
+.card-forecast { grid-area: forecast; }
+
+.forecast-row {
+  display: flex;
+  gap: .5rem;
+  overflow-x: auto;
+  padding-bottom: .25rem;
+  scrollbar-width: none;
+}
+.forecast-row::-webkit-scrollbar { display: none; }
+
+.forecast-day {
+  flex: 1;
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .15rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: .85rem .5rem;
+  text-align: center;
+  transition: background .2s;
+}
+.forecast-day:hover { background: rgba(255,255,255,0.08); }
+
+.forecast-name { font-family: var(--font-display); font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.forecast-day img { width: 48px; }
+.forecast-desc { font-size: .75rem; color: var(--muted); }
+.forecast-temps { font-size: .85rem; font-weight: 500; }
+.hi { color: #fff; }
+.sep { color: var(--muted); margin: 0 .15rem; }
+.lo { color: var(--muted); }
+
+/* ── Footer ─────────────────────────────────────────────────────────────────── */
+footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 1rem;
+  color: var(--muted);
+  font-size: .8rem;
+}
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* ── Animations ─────────────────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
